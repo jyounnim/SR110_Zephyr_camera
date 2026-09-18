@@ -1,0 +1,57 @@
+/*
+ * Lab C3 (Camera TFT Preview) - SR110 (sr100_rdk/sr100/m55)
+ *
+ * - Camera: video_syna0 (MIPI CSI) + ov02c10 on i2c1 are both
+ *   "okay" by default in the board's base devicetree - no overlay
+ *   entry needed here, same as Lab C1/C2.
+ *
+ * - Status/preview display: ST7789V3 TFT over SPI0, reusing
+ *   ai_labs/03_sensor_anomaly's confirmed-working config verbatim
+ *   (level-shifted signals, native HW CS, GPIO17/18 reset/dc, 4MHz).
+ *   SPI0's MOSI/MISO pads are physically shared with the M55's
+ *   default console UART (UART1, GPIO23/24), so the console is moved
+ *   to UART0's alternate pin group here. An external USB-TTL adapter
+ *   is needed to see console output (GPIO44/45, J24 pins 13/14) - see
+ *   the lab doc for the full explanation, it is not repeated here.
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+&spi0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+	pinctrl-0 = <&spi_mstr_mosi &spi_mstr_miso &spi_mstr_clk &spi_mstr_cs>;
+	pinctrl-names = "default";
+
+	st7789v_disp: st7789v@0 {
+		compatible = "zds,st7789v";
+		reg = <0>;
+		spi-max-frequency = <4000000>;
+		reset-gpios = <&gpioa 17 GPIO_ACTIVE_LOW>;  /* SoC GPIO17, J24 pin 3 - through level shifter */
+		dc-gpios = <&gpioa 18 GPIO_ACTIVE_HIGH>;    /* SoC GPIO18, J24 pin 4 - through level shifter */
+		width = <240>;
+		height = <280>;
+		x-offset = <0>;
+		y-offset = <20>;
+	};
+};
+
+&ns16550_uart1 {
+	status = "disabled";
+};
+
+&ns16550_uart0 {
+	pinctrl-0 = <&uart0_tx_c &uart0_rx_c>;
+	pinctrl-names = "default";
+	current-speed = <230400>;
+	dlf = <2>;
+	status = "okay";
+};
+
+/ {
+	chosen {
+		zephyr,console = &ns16550_uart0;
+		zephyr,shell-uart = &ns16550_uart0;
+	};
+};

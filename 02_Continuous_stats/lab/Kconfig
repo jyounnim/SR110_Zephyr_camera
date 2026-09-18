@@ -1,0 +1,45 @@
+# Copyright (c) 2026 Synaptics Incorporated
+# SPDX-License-Identifier: Apache-2.0
+#
+# Lab C2: continuous WQVGA capture + per-frame brightness statistics.
+# Simplified relative to lab_c1_basic_capture's Kconfig - WQVGA only,
+# no FHD choice (this lab is not about resolution, so that scaffolding
+# is dropped to keep the code focused on the capture loop + stats).
+
+mainmenu "Camera Continuous Capture + Brightness Stats Lab (SR110)"
+
+source "Kconfig.zephyr"
+
+menu "Camera Stats Lab"
+
+config VIDEO_SAMPLE_FRAME_WIDTH
+        int "Frame width (pixels)"
+        default 480
+
+config VIDEO_SAMPLE_FRAME_HEIGHT
+        int "Frame height (pixels)"
+        default 270
+
+config VIDEO_SAMPLE_FRAME_PITCH
+        int "Frame pitch (bytes/line)"
+        default 480
+
+config VIDEO_SAMPLE_BUFFER_COUNT
+        int "Video buffer count"
+        default 2
+        range 1 8
+
+config VIDEO_SAMPLE_CAPTURE_TIMEOUT_MS
+        int "Capture timeout (ms)"
+        default 2000
+
+config VIDEO_SAMPLE_CAPTURE_COUNT
+        int "Number of frames to capture before the sample exits"
+        default 100
+        range 1 5000
+        help
+          This lab still stops after a fixed number of frames rather than
+          running forever - easier to reproduce and to bound the log output.
+          Raise this if you want a longer run.
+
+endmenu

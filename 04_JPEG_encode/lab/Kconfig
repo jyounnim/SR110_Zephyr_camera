@@ -1,0 +1,13 @@
+# Copyright (c) 2026 Synaptics Incorporated
+# SPDX-License-Identifier: Apache-2.0
+#
+# Lab C4: camera -> hardware JPEG encoder. Based verbatim on the SDK's
+# samples/drivers/video/enc sample (live sensor mode, mode=0).
+
+mainmenu "Camera JPEG Encode Lab (SR110)"
+
+source "Kconfig.zephyr"
+
+menu "Camera JPEG Encode Lab"
+
+endmenu

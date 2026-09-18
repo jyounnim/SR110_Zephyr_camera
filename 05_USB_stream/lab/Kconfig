@@ -1,0 +1,17 @@
+mainmenu "USB CDC Camera Streaming Lab (SR110 Lab C5)"
+
+source "Kconfig.zephyr"
+
+# Reuses Zephyr's shared "sample_usbd" helper Kconfig (device descriptors,
+# VID/PID, etc.) - same mechanism the SDK's mipi_capture_to_enc sample uses.
+source "samples/subsys/usb/common/Kconfig.sample_usbd"
+
+config SAMPLE_USBD_PRODUCT
+	default "SR110_Camera_Stream"
+
+config SAMPLE_USBD_PID
+	default 0x0009
+
+menu "USB Camera Streaming Lab"
+
+endmenu

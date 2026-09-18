@@ -1,0 +1,64 @@
+# Copyright (c) 2026 Synaptics Incorporated
+# SPDX-License-Identifier: Apache-2.0
+#
+# Adapted from zephyr_srsdk/samples/drivers/video/mipi_capture/Kconfig
+# for Lab 02 (WQVGA-only, no board overlay needed).
+
+mainmenu "Camera Capture Lab (SR110)"
+
+source "Kconfig.zephyr"
+
+menu "Camera Capture Lab"
+
+choice VIDEO_SAMPLE_RESOLUTION
+        prompt "Capture resolution"
+        default VIDEO_SAMPLE_RES_WQVGA
+        help
+          Select which sensor mode / capture resolution the lab configures.
+          FHD requires a reserved-memory devicetree overlay that this lab
+          does not include (see the lab document's "Good to Know" section) -
+          stick to WQVGA unless you add that overlay yourself.
+
+config VIDEO_SAMPLE_RES_WQVGA
+        bool "480x270 (WQVGA)"
+
+config VIDEO_SAMPLE_RES_FHD
+        bool "1920x1080 (FHD) - requires a memory-region overlay, not included in this lab"
+
+endchoice
+
+config VIDEO_SAMPLE_PIXFMT_RAW8
+        bool
+        default y
+
+config VIDEO_SAMPLE_FRAME_WIDTH
+        int "Frame width (pixels)"
+        default 480 if VIDEO_SAMPLE_RES_WQVGA
+        default 1920 if VIDEO_SAMPLE_RES_FHD
+
+config VIDEO_SAMPLE_FRAME_HEIGHT
+        int "Frame height (pixels)"
+        default 270 if VIDEO_SAMPLE_RES_WQVGA
+        default 1080 if VIDEO_SAMPLE_RES_FHD
+
+config VIDEO_SAMPLE_FRAME_PITCH
+        int "Frame pitch (bytes/line)"
+        default 480 if VIDEO_SAMPLE_RES_WQVGA
+        default 1920 if VIDEO_SAMPLE_RES_FHD
+
+config VIDEO_SAMPLE_BUFFER_COUNT
+        int "Video buffer count"
+        default 2
+        range 1 8
+
+config VIDEO_SAMPLE_CAPTURE_TIMEOUT_MS
+        int "Capture timeout (ms)"
+        default 2000 if VIDEO_SAMPLE_RES_WQVGA
+        default 5000 if VIDEO_SAMPLE_RES_FHD
+
+config VIDEO_SAMPLE_CAPTURE_COUNT
+        int "Number of frames to capture"
+        default 10
+        range 1 1000
+
+endmenu

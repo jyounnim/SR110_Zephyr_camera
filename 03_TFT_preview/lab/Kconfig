@@ -1,0 +1,52 @@
+# Copyright (c) 2026 Synaptics Incorporated
+# SPDX-License-Identifier: Apache-2.0
+#
+# Lab C3: camera capture + TFT preview. WQVGA-only, like Lab C2 - the
+# capture side is not the point of this lab, the display pipeline is.
+
+mainmenu "Camera TFT Preview Lab (SR110)"
+
+source "Kconfig.zephyr"
+
+menu "Camera TFT Preview Lab"
+
+config VIDEO_SAMPLE_FRAME_WIDTH
+        int "Frame width (pixels)"
+        default 480
+
+config VIDEO_SAMPLE_FRAME_HEIGHT
+        int "Frame height (pixels)"
+        default 270
+
+config VIDEO_SAMPLE_FRAME_PITCH
+        int "Frame pitch (bytes/line)"
+        default 480
+
+config VIDEO_SAMPLE_BUFFER_COUNT
+        int "Video buffer count"
+        default 2
+        range 1 8
+
+config VIDEO_SAMPLE_CAPTURE_TIMEOUT_MS
+        int "Capture timeout (ms)"
+        default 2000
+
+config TFT_PREVIEW_INTERVAL_MS
+        int "Boot-time default delay between displayed preview frames (ms)"
+        default 1000
+        range 100 10000
+        help
+          The camera itself keeps streaming continuously in the
+          background (video_stream_start() is called once); this is
+          just how often the main loop pulls one frame out of that
+          stream and pushes it to the TFT. This value is only the
+          value used at boot - main.c stores it in a plain runtime
+          variable that the "preview interval set <ms>" shell command
+          can change afterwards without rebuilding/reflashing, so
+          treat this Kconfig default as a starting point to tune from
+          rather than something you need to rebuild for every test.
+          1000-2000ms is a reasonable starting point: fast enough to
+          feel "live", slow enough not to flood the slow SPI0 link or
+          the serial console with one log line per frame.
+
+endmenu
